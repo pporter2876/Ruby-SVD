@@ -6,6 +6,7 @@ class SVDMatrix < Matrix
   
   # Create a new SVD Matrix with m rows, n columns
   def initialize(m, n)
+    @row_size = m
     @rows = Array.new(m)
     @column_size = n
     m.times {|i| @rows[i] = Array.new(n)}
@@ -37,23 +38,36 @@ class SVDMatrix < Matrix
   # [ 0, 0, 0, 0 ]
   def decompose(reduce_dimensions_to = nil)
     input_array = []
-    @rows.each {|row| input_array += row}
-    u_array, w_array, v_array = SVD.decompose(input_array, row_size, column_size)
-    
-    # recompose U matrix
-    u = SVDMatrix.new(row_size, reduce_dimensions_to || column_size)
-    row_size.times {|i| u.set_row(i, u_array.slice!(0, column_size)[0...(reduce_dimensions_to || column_size)])}
-    
-    # recompose V matrix
-    v = SVDMatrix.new(column_size, reduce_dimensions_to || column_size)
-    column_size.times {|i| v.set_row(i, v_array.slice!(0, column_size)[0...(reduce_dimensions_to || column_size)])}
-    
-    # diagonalise W array as a matrix
-    if reduce_dimensions_to
-      w_array = w_array[0...reduce_dimensions_to]
-    end
-    w = Matrix.diagonal(*w_array)
-    
+
+    if @row_size >= @column_size
+
+      @rows.each {|row| input_array += row}
+      u_array, w_array, v_array = SVD.decompose(input_array, row_size, column_size)
+      
+      # recompose U matrix
+      u = SVDMatrix.new(row_size, reduce_dimensions_to || column_size)
+      row_size.times {|i| u.set_row(i, u_array.slice!(0, column_size)[0...(reduce_dimensions_to || column_size)])}
+      
+      # recompose V matrix
+      v = SVDMatrix.new(column_size, reduce_dimensions_to || column_size)
+      column_size.times {|i| v.set_row(i, v_array.slice!(0, column_size)[0...(reduce_dimensions_to || column_size)])}
+      
+      # diagonalise W array as a matrix
+      if reduce_dimensions_to
+        w_array = w_array[0...reduce_dimensions_to]
+      end
+      w = Matrix.diagonal(*w_array)
+
+    else
+
+      transpose = SVDMatrix.new( @column_size, @row_size )
+      for i in 0..@column_size-1 
+        transpose.set_row(i, @rows[i].to_a )
+      end
+      v , w, u = transpose.decompose( reduce_dimensions_to || @row_size )
+
+    end  
+
     [u, w, v]
   end
   
