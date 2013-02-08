@@ -61,6 +61,7 @@ class SVDMatrix < Matrix
     else
 
       transpose = SVDMatrix.new( @column_size, @row_size )
+      @rows = @rows.transpose
       for i in 0..@column_size-1 
         transpose.set_row(i, @rows[i].to_a )
       end
