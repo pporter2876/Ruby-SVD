@@ -12,11 +12,6 @@ class SVDMatrix < Matrix
     m.times {|i| @rows[i] = Array.new(n)}
   end
   
-  # Set the value of the cell i, j
-  def []=(i, j, val)
-    @rows[i][j] = val
-  end
-  
   # Set the value of a row to an array
   def set_row(i, row)
     @rows[i] = row
