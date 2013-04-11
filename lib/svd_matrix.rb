@@ -3,7 +3,7 @@ require 'svd'
 
 class SVDMatrix < Matrix
   public_class_method :new
-  
+  public: "[]=", :set_element, :set_component
   # Create a new SVD Matrix with m rows, n columns
   def initialize(m, n)
     @row_size = m
