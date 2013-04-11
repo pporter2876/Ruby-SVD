@@ -9,7 +9,7 @@ class SVDMatrix < Matrix
     @row_size = m
     @rows = Array.new(m)
     @column_size = n
-    m.times {|i| @rows[i] = Array.new(n)}
+    m.times {|i| @rows[i] = Array.new(n) {0} }
   end
   
   # Set the value of a row to an array
