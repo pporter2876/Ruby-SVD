@@ -37,6 +37,7 @@ class SVDMatrix < Matrix
     if @row_size >= @column_size
 
       @rows.each {|row| input_array += row}
+      column_size = input_array.length / row_size
       u_array, w_array, v_array = SVD.decompose(input_array, row_size, column_size)
       
       # recompose U matrix
